@@ -24,7 +24,7 @@ def rk4(h, y, inputs, f):
 
 class LIF_rk4:
     def __init__(self, I):
-        self.GL=0.025
+        self.GL = 0.025
         self.EL = -70
         self.I = I
         self.C = 0.5
@@ -34,46 +34,47 @@ class LIF_rk4:
         self.v_threshold = -50
 
     def derivative(self, v, inputs=0):
-        Dv = (-self.GL*(v-self.EL)+self.I)/self.C
+        Dv = (-self.GL * (v - self.EL) + self.I) / self.C
         return Dv
 
     def step(self, v, dt, inputs=0):
         v_new = rk4(dt, v, inputs, self.derivative)
-        if self.v_threshold<v_new<0:
+        if self.v_threshold < v_new < 0:
             v_new = self.v_peak
         elif v_new > 0:
             v_new = self.v_reset
         return v_new
 
 
-# 参数
+# parameter
 dt = 0.001
 t_start = 0
-t_end = 500
+t_end = 200
 times = np.arange(t_start, t_end, dt)
 
-I = 0.9
 
-# 初始化对象
-LIF = LIF_rk4(I)
+def I_with_plt(I):
+    # Initialize Object
+    LIF = LIF_rk4(I)
+    v = -70  # init state
+    v_state = []
+    # ODE
+    for t in times:
+        v_state.append(v)
+        v = LIF.step(v, dt)
+    return v_state
 
-v = -70 # 静息电位开始
-v_state = []
-v_reset = []
-v_threshold = []
 
-# 数值积分
-for t in times:
-    v_state.append(v)
-    # v_reset.append(1)
-    # v_threshold.append(0)
-    v = LIF.step(v, dt)
+v_state_2 = I_with_plt(0.2)
+v_state_4 = I_with_plt(0.4)
+v_state_6 = I_with_plt(0.6)
+v_state_8 = I_with_plt(0.8)
 
-# print(v_state)
 plt.figure()
-plt.plot(times, v_state, label='v')
-# plt.plot(times, v_reset, label='v_reset')
-# plt.plot(times,v_threshold, label='v_threshold')
+plt.plot(times, v_state_2, label='v2')
+plt.plot(times, v_state_4, label='v4')
+plt.plot(times, v_state_6, label='v6')
+plt.plot(times, v_state_8, label='v8')
 plt.xlabel('time (ms)')
 plt.ylabel('V (mv)')
 plt.legend()
