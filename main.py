@@ -1,16 +1,36 @@
-# This is a sample Python script.
+import brainpy as bp
+import brainpy.math as bm
+import matplotlib.pyplot as plt
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+bm.set_platform('cpu')
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@bp.odeint(method='rk4', dt=0.01)
+def LIF(V, t, I, EL, GL, C):
+    dVdt = (-GL * (V - EL) + I) / C
+    # if -50 < V < 0:
+    #     V = 30
+    # elif V > 0:
+    #     v = -60
+    print('hh')
+    return dVdt
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+I = 0.9
+EL = -70
+GL = 0.025
+C = 0.5
+
+runner = bp.IntegratorRunner(
+    LIF,
+    monitors=list('V'),
+    inits=[-70.],
+    args=dict(I=I,EL=EL,GL=GL,C=C),
+    dt=0.01
+)
+
+runner.run(100.)
+
+plt.plot(runner.mon.ts, runner.mon.V,label='V')
+plt.legend()
+plt.show()
