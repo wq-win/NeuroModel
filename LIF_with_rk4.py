@@ -32,6 +32,8 @@ class LIF_rk4:
         self.v_peak = 30
         self.v_reset = -60
         self.v_threshold = -50
+        self.v_refractory_time = 0
+        self.refractory_time = 400
 
     def derivative(self, v, inputs=0):
         Dv = (-self.GL * (v - self.EL) + self.I) / self.C
@@ -43,13 +45,18 @@ class LIF_rk4:
             v_new = self.v_peak
         elif v_new > 0:
             v_new = self.v_reset
+            self.v_refractory_time = self.v_refractory_time * 0 + self.refractory_time
+        elif self.v_refractory_time > 0:
+            v_new = self.v_reset
+            self.v_refractory_time = self.v_refractory_time - 1
+
         return v_new
 
 
 # parameter
 dt = 0.001
 t_start = 0
-t_end = 200
+t_end = 40
 times = np.arange(t_start, t_end, dt)
 
 
