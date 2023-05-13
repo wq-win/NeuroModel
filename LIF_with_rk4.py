@@ -56,7 +56,7 @@ class LIF_rk4:
 # parameter
 dt = 0.001
 t_start = 0
-t_end = 40
+t_end = 200
 times = np.arange(t_start, t_end, dt)
 
 
