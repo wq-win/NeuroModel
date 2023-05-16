@@ -25,7 +25,7 @@ def rk4(h, y, inputs, f):
 class LIF_rk4:
     def __init__(self, I):
         self.GL = 0.025  # gating
-        self.EL = -70  # membrane potential
+        self.EL = -70  # leak potential
         self.I = I  # inject current
         self.C = 0.5  # capacitance
         # v_peak > v_threshold
